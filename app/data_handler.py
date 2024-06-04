@@ -1,20 +1,20 @@
 import time
-from collections import deque
 from fft_processor import FFTProcessor
+import spotify_client
 
 class DataHandler:
     def __init__(self):
         self.data_buffer = []
         self.fft_processor = FFTProcessor()
-        self.recent_high_results = deque(maxlen=10)
+        self.sp = spotify_client.SpotifyClient()
 
     def handle_output(self, data):
         self.data_buffer.extend(data.message["raw_eeg"])
 
-    def process_data_in_intervals(self):
+    def process_data_in_intervals(self, seconds):
         if self.data_buffer:
             latest_timestamp = self.data_buffer[-1]['timestamp']
-            threshold_timestamp = latest_timestamp - 3
+            threshold_timestamp = latest_timestamp - seconds
             recent_data = [data for data in self.data_buffer if data['timestamp'] >= threshold_timestamp]
             if len(recent_data) > 1:
                 fft_result = self.fft_processor.fft(recent_data)
@@ -26,18 +26,11 @@ class DataHandler:
     def periodic_processor(self):
         while True:
             time.sleep(3)
-            result = self.process_data_in_intervals()
-            current_time = time.time()
+            result = self.process_data_in_intervals(3)
 
             if result:
-                self.recent_high_results.append(current_time)
-
-            while self.recent_high_results and (current_time - self.recent_high_results[0] > 10):
-                self.recent_high_results.popleft()
-
-            if len(self.recent_high_results) >= 3:
+                # if more than x triggers -> spotify
                 print("TRIGGER")
-                self.recent_high_results.clear()
 
     def process_file(self, file_path):
         trigger_times = []
@@ -53,20 +46,15 @@ class DataHandler:
                         self.data_buffer.extend(buffer)
                         buffer = []
 
-                        result = self.process_data_in_intervals()
-                        current_time = timestamp
-
+                        result = self.process_data_in_intervals(3)
                         if result:
-                            self.recent_high_results.append(current_time)
-
-                        while self.recent_high_results and (current_time - self.recent_high_results[0] > 10):
-                            self.recent_high_results.popleft()
-
-                        if len(self.recent_high_results) >= 3:
-                            trigger_times.append(current_time)
-                            self.recent_high_results.clear()  # Clear after triggering to avoid continuous triggers
+                            trigger_times.append("triggered")
 
                 except ValueError:
-                    continue  # Skip lines that can't be parsed
+                    continue
 
         print("Trigger Timestamps:", len(trigger_times))
+
+        if len(trigger_times) > 10:
+            print("SPOTIFY")
+            #self.sp.trigger()
