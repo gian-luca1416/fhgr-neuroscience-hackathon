@@ -1,6 +1,14 @@
 # FHGR Neuroscience Hackathon
 
 ## Description
+### Implementation
+- Stream EEG data or use recorded data
+- Periodic processor for streaming
+- Modular interpretation functions
+  - Peak detection (individual)
+  - Models?
+- Signal thresholds
+- If trigger -> add current song to defined playlist
 
 ## How To Use
 

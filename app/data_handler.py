@@ -1,8 +1,13 @@
 import time
 from fft_processor import FFTProcessor
 import spotify_client
+import threading
 
 class DataHandler:
+    trigger_count = 0
+    threshold = 4
+    lock = threading.Lock()
+
     def __init__(self):
         self.data_buffer = []
         self.fft_processor = FFTProcessor()
@@ -25,12 +30,18 @@ class DataHandler:
 
     def periodic_processor(self):
         while True:
+            # maybe more seconds here - time window we consider until decision is made
             time.sleep(3)
             result = self.process_data_in_intervals(3)
 
             if result:
-                # if more than x triggers -> spotify
-                print("TRIGGER")
+                print("true")
+                with DataHandler.lock:
+                    DataHandler.trigger_count += 1
+                    if DataHandler.trigger_count >= DataHandler.threshold:
+                        print("SPOTIFY")
+                        #self.sp.trigger()
+                        DataHandler.trigger_count = 0
 
     def process_file(self, file_path):
         trigger_times = []
@@ -42,7 +53,7 @@ class DataHandler:
                     timestamp, ch1 = map(float, line.strip().split(','))
                     buffer.append({'timestamp': timestamp, 'ch1': ch1})
 
-                    if len(buffer) >= 700:
+                    if len(buffer) >= 750:
                         self.data_buffer.extend(buffer)
                         buffer = []
 
@@ -55,6 +66,6 @@ class DataHandler:
 
         print("Trigger Timestamps:", len(trigger_times))
 
-        if len(trigger_times) > 10:
+        if len(trigger_times) > DataHandler.threshold:
             print("SPOTIFY")
             #self.sp.trigger()
