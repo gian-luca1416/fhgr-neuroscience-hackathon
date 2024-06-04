@@ -5,7 +5,7 @@ import threading
 
 class DataHandler:
     trigger_count = 0
-    threshold = 4
+    threshold = 3
     lock = threading.Lock()
 
     def __init__(self):
@@ -40,7 +40,7 @@ class DataHandler:
                     DataHandler.trigger_count += 1
                     if DataHandler.trigger_count >= DataHandler.threshold:
                         print("SPOTIFY")
-                        #self.sp.trigger()
+                        self.sp.trigger()
                         DataHandler.trigger_count = 0
 
     def process_file(self, file_path):
@@ -64,8 +64,8 @@ class DataHandler:
                 except ValueError:
                     continue
 
-        print("Trigger Timestamps:", len(trigger_times))
+        print("Triggers:", len(trigger_times))
 
-        if len(trigger_times) > DataHandler.threshold:
+        if len(trigger_times) >= DataHandler.threshold:
             print("SPOTIFY")
             #self.sp.trigger()

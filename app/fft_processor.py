@@ -68,7 +68,7 @@ class FFTProcessor:
         peak_powers = np.abs(fft_values[peaks])
 
         # Define a threshold for peak prominence
-        peak_threshold = (np.mean(peak_powers) + 2 * np.std(peak_powers) / 2)
+        peak_threshold = (np.mean(peak_powers) + 2 * np.std(peak_powers) / 4)
 
         # Check if there are significant peaks in the beta and gamma bands
         significant_alpha_peaks = np.any(peak_powers[(fft_frequencies[peaks] >= alpha_band[0]) &

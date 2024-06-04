@@ -15,7 +15,7 @@ class SpotifyClient:
         fhgr_playlist = None
 
         for playlist in playlists['items']:
-            if playlist['name'] == 'fhgr':
+            if playlist['name'] == 'personal_favs':
                 fhgr_playlist = playlist
                 break
 

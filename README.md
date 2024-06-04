@@ -9,6 +9,7 @@
   - Models?
 - Signal thresholds
 - If trigger -> add current song to defined playlist
+- Calibration required!
 
 ## How To Use
 
