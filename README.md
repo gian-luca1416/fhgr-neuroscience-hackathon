@@ -1,5 +1,9 @@
 # FHGR Neuroscience Hackathon
 
+## Description
+
+## How To Use
+
 ## Ideas
 - Jaw clench
   - (1) Add current song to some playlist (Spotify API)

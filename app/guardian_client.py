@@ -14,5 +14,5 @@ class GuardianClientHandler:
         self.client.update_recording_tags(recording_id=rec_id, tags=["tag1", "tag2"])
         self.client.update_recording_display_name(recording_id=rec_id, display_name="todays_recordings")
         self.client.download_file(recording_id=rec_id, file_type=FileTypes.EEG)
-        self.client.generate_and_download_sleep_report(recording_id=rec_id)
-        self.client.generate_and_download_daytime_report(recording_id=rec_id)
+        #self.client.generate_and_download_sleep_report(recording_id=rec_id)
+        #self.client.generate_and_download_daytime_report(recording_id=rec_id)
