@@ -2,10 +2,12 @@ import time
 from fft_processor import FFTProcessor
 import spotify_client
 import threading
+import config
+
 
 class DataHandler:
     trigger_count = 0
-    threshold = 3
+    threshold = config.SIGNAL_THRESHOLD
     lock = threading.Lock()
 
     def __init__(self):
@@ -18,14 +20,14 @@ class DataHandler:
 
     def process_data_in_intervals(self, seconds):
         if self.data_buffer:
-            latest_timestamp = self.data_buffer[-1]['timestamp']
+            latest_timestamp = self.data_buffer[-1]["timestamp"]
             threshold_timestamp = latest_timestamp - seconds
-            recent_data = [data for data in self.data_buffer if data['timestamp'] >= threshold_timestamp]
+            recent_data = [data for data in self.data_buffer if data["timestamp"] >= threshold_timestamp]
             if len(recent_data) > 1:
                 fft_result = self.fft_processor.fft(recent_data)
-                if fft_result == False:
+                if not fft_result:
                     return False
-                result = self.fft_processor.interpret_fft_for_arousal_2(fft_result[0], fft_result[1], fft_result[2])
+                result = self.fft_processor.interpret_fft_for_arousal(fft_result[0], fft_result[1])
                 return result
 
     def periodic_processor(self):
@@ -35,24 +37,26 @@ class DataHandler:
             result = self.process_data_in_intervals(3)
 
             if result:
-                print("true")
+                print("Signal")
                 with DataHandler.lock:
                     DataHandler.trigger_count += 1
                     if DataHandler.trigger_count >= DataHandler.threshold:
                         print("SPOTIFY")
-                        self.sp.trigger()
+                        # only trigger if API key is defined
+                        # self.sp.trigger()
                         DataHandler.trigger_count = 0
 
     def process_file(self, file_path):
         trigger_times = []
 
-        with open(file_path, 'r') as f:
+        with open(file_path, "r") as f:
             buffer = []
             for line in f:
                 try:
-                    timestamp, ch1 = map(float, line.strip().split(','))
-                    buffer.append({'timestamp': timestamp, 'ch1': ch1})
+                    timestamp, ch1 = map(float, line.strip().split(","))
+                    buffer.append({"timestamp": timestamp, "ch1": ch1})
 
+                    # there are ca. 750 events in 3 seconds (if we stream the data)
                     if len(buffer) >= 750:
                         self.data_buffer.extend(buffer)
                         buffer = []
@@ -64,8 +68,9 @@ class DataHandler:
                 except ValueError:
                     continue
 
-        print("Triggers:", len(trigger_times))
+        print("Signals:", len(trigger_times))
 
         if len(trigger_times) >= DataHandler.threshold:
             print("SPOTIFY")
-            #self.sp.trigger()
+            # only trigger if API key is defined
+            # self.sp.trigger()
