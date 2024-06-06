@@ -18,6 +18,7 @@ if os.path.exists(CALIBRATION_FILE):
     PEAK_THRESHOLD = calibration.PEAK_THRESHOLD
     SIGNAL_THRESHOLD = calibration.SIGNAL_THRESHOLD
 else:
+    # for streaming, change to calibrate
     PEAK_THRESHOLD = 4
     SIGNAL_THRESHOLD = 3
 
