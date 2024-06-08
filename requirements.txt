@@ -1,0 +1,5 @@
+idun_guardian_sdk>=0.1.5
+matplotlib>=3.8.2
+numpy>=1.26.4
+scipy>=1.13.1
+spotipy>=2.24.0
