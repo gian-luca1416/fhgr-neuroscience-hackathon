@@ -4,7 +4,7 @@ import config
 
 class GuardianClientHandler:
     def __init__(self, data_handler):
-        self.client = GuardianClient(api_token=config.MY_API_TOKEN, address="801C1CDF-94B2-33EB-A976-E8B415D718D6")
+        self.client = GuardianClient(api_token=config.MY_API_TOKEN, address=config.ADDRESS)
         self.data_handler = data_handler
 
     async def start(self):

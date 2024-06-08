@@ -7,7 +7,7 @@ class SpotifyClient:
     def __init__(self):
         self.scope = "user-library-read, user-read-currently-playing, playlist-read-private, playlist-modify-private, playlist-modify-public"
         self.sp = spotipy.Spotify(
-            auth_manager=SpotifyOAuth(scope=self.scope, client_id=config.client_id, client_secret=config.client_secret,
+            auth_manager=SpotifyOAuth(scope=self.scope, client_id=config.CLIENT_ID, client_secret=config.CLIENT_SECRET,
                                       redirect_uri="http://localhost:8080"))
 
     def trigger(self):

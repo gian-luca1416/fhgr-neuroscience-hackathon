@@ -2,9 +2,10 @@ import os
 import importlib.util
 
 MY_API_TOKEN = "123"
-RECORDING_TIMER = 60 * 0.5
-client_id = "123"
-client_secret = "123"
+ADDRESS = "123"
+RECORDING_TIMER = 30
+CLIENT_ID = "123"
+CLIENT_SECRET = "123"
 
 EEG_FILE_PATH = "../experiments/k/like-muse_radio.csv"
 
